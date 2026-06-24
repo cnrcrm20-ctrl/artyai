@@ -80,6 +80,10 @@ async def chat(session_id: str, user_message: str) -> dict:
         )
         data = response.json()
     
+    if "choices" not in data:
+        error_msg = data.get("error", {}).get("message", str(data))
+        raise Exception(f"OpenRouter error: {error_msg}")
+    
     assistant_message = data["choices"][0]["message"]["content"]
     
     await save_message(session_id, "user", user_message)
